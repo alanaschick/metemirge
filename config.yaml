@@ -1,0 +1,17 @@
+# **********************************
+# * Parameters for metemirge pipeline *
+# **********************************
+
+# Examples
+db_to_use: "ref_files/hg19.fa"
+bowtie_db: "ref_files/ref_database_index"
+
+# Number of threads
+num_threads: 28
+
+# EMIRGE parameters
+max_read_length: 100
+insert_mean: 50
+iterations: 40
+
+# Any other parameters
