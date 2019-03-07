@@ -30,10 +30,10 @@ rule blast:
     input: "data/emirge/{sample}"
     output: "results/result1file"
     conda: "envs/blast_env.yaml"
-    shell: "python scripts/runEmirgeCluster.py <options>"
+    shell: "python scripts/runParseBlast.py <options>"
 
 rule selectbest:
     input: "results/result1file"
     output: "results/result2file"
     conda: "envs/selectbest_env.yaml"
-    shell: "python scripts/runEmirgeCluster.py <options>"
+    shell: "python scripts/runEmirgeSelectBlastHit.py <options>"
