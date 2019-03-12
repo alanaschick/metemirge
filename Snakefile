@@ -1,12 +1,12 @@
-# **********************************
+# ************************************
 # * Snakefile for metemirge pipeline *
-# **********************************
+# ************************************
 
 # **** Variables ****
 
 configfile: "config.yaml"
 
-# Not sure if this is needed for metemirge, it specifies a list of files to run the pipeline on
+# Specify the list of files to run the pipeline on
 import pandas as pd
 SAMPLES = pd.read_csv(config["list_files"], header = None)
 SAMPLES = SAMPLES[0].tolist()
@@ -15,25 +15,45 @@ SAMPLES = SAMPLES[0].tolist()
 
 rule all:
     input:
-        "results/result1file",
-        "results/result2file"
+        "results/{sample}/summary.csv",
+        "results/{sample}/{sample}_best.tsv"
 
-rule reconstruct:
+rule runemirge:
     input:
-        r1 = "data/filtdata/{sample}_1.fastq.gz",
-        r2 = "data/filtdata/{sample}_2.fastq.gz"
-    output: "data/emirge/{sample}"
-    conda: "envs/reconstruct_env.yaml"
-    shell: "python scripts/runEmirgeCluster.py <options>"
+        r1 = "{params.dir}{sample}_read1.fastq",
+        r2 = "{params.dir}{sample}_read2.fastq"
+    output: "data/emirge/{sample}/iter.{config[max_num_iter]}/iter.{config[max_num_iter]}.cons.fasta}"
+    params:
+        dir = {config[emirge_dir]}
+    conda: "envs/emirge_env.yaml"
+    shell:
+        "emirge.py {config[emirge_dir]} -1 {input.r1} -2 {input.r2} "
+        "-f {config[fasta_db]} -b {config[bowtie_db]} -l {config[max_read_length]} "
+        "-i {config[insert_mean]} -s {config[insert_stddev]} -n {config[num_iter]} "
+        "-a {config[num_threads]}"
 
-rule blast:
-    input: "data/emirge/{sample}"
-    output: "results/result1file"
-    conda: "envs/blast_env.yaml"
-    shell: "python scripts/runParseBlast.py <options>"
+#rule rename:
+#    input: "data/emirge/{sample}/iter.{config[max_num_iter]}/iter.{config[max_num_iter]}.cons.fasta}"
+#    output: "data/emirge/{sample}/{sample}_renamed.fasta"
+#    conda: "envs/emirge_env.yaml"
+#    shell: "python scripts/emirge_rename_fasta.py <options>"
 
-rule selectbest:
-    input: "results/result1file"
-    output: "results/result2file"
-    conda: "envs/selectbest_env.yaml"
-    shell: "python scripts/runEmirgeSelectBlastHit.py <options>"
+#rule blast:
+#    input: "data/emirge/{sample}/{sample}_renamed.fasta"
+#    output: "data/emirge/{sample}/{sample}_raw_blast_table.tsv"
+#    params:
+#        db = "{config[blast_db]}"
+#    conda: "envs/blast_env.yaml"
+#    shell: "blast <options>"
+
+#rule parseblast:
+#    input: "data/emirge/{sample}/{sample}_raw_blast_table.tsv"
+#    output: "data/emirge/{sample}/{sample}_parsed.tsv"
+#    conda:
+#    shell: "python scripts/parsescript.py"
+
+#rule selectbest:
+#    input: expand("data/emirge/{sample}/{database}/{sample}_parsed.tsv", database = DATABASE)
+#    output: "results/{sample}/{sample}_best.tsv"
+#    conda:
+#    shell: "python scripts/selecbest.py"
