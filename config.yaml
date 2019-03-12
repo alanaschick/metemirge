@@ -13,6 +13,7 @@ max_read_length: 100
 insert_mean: 240
 insert_stddev: 100
 num_iter: 40
+num_iter_str: "40"
 
 # Number of threads
 num_threads: 28
