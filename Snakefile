@@ -14,28 +14,29 @@ SAMPLES = SAMPLES[0].tolist()
 # **** Rules ****
 
 rule all:
-    input: expand("data/emirge/{sample}.fasta", sample=SAMPLES)
+    input: expand("data/emirge/{sample}_emirge.fasta", sample=SAMPLES)
         #"results/{sample}/summary.csv",
         #"results/{sample}/{sample}_best.tsv"
 
 rule runemirge:
     input:
-        r1 = config["emirge_dir"]+"{sample}_read1.fastq",
-        r2 = config["emirge_dir"]+"{sample}_read2.fastq"
-    output: "data/emirge/"+"{sample}.fasta"
+        r1 = config["input_dir"]+"{sample}_read1.fastq",
+        r2 = config["input_dir"]+"{sample}_read2.fastq"
+    output: "data/emirge/{sample}/priors.initialized.txt"
     conda: "envs/emirge_env.yaml"
+    params:
+        outdir = "data/emirge/{sample}/"
     shell:
-        "emirge.py {config[emirge_dir]} -1 {input.r1} -2 {input.r2} "
+        "emirge.py {params.outdir} -1 {input.r1} -2 {input.r2} "
         "-f {config[fasta_db]} -b {config[bowtie_db]} -l {config[max_read_length]} "
         "-i {config[insert_mean]} -s {config[insert_stddev]} -n {config[num_iter]} "
         "-a {config[num_threads]} --phred33"
 
-#rule rename:
-#    input: "data/emirge/"+"{sample}.fasta"
-#    output:
-#        rename = "data/emirge/{sample}_final.fasta"
-#    conda: "envs/emirge_env.yaml"
-#    shell: "emirge_rename_fasta.py iter.{config[num_iter]} > {output.rename}"
+rule rename:
+    input: "data/emirge/{sample}/iter."+config["num_iter"]
+    output: "data/emirge/{sample}_emirge.fasta"
+    conda: "envs/emirge_env.yaml"
+    shell: "emirge_rename_fasta.py {input} > {output}"
 
 #rule blast:
 #    input: "data/emirge/{sample}_final.fasta"
