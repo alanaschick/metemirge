@@ -49,10 +49,10 @@ All output files will be placed in the `results` directory and logs of each rule
 
 ## Pipeline summary
 
-1) Reconstruct marker sequences. Enter details here. 
+1) Reconstruct marker sequences using EMIRGE. Enter details here. 
 
 2) Blast. 
 
-3) Select best hit.
+3) Select best blast hit.
 
 4) Optional metaphlan? Compare to EMIRGE output.
