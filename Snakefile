@@ -22,7 +22,9 @@ rule runemirge:
     input:
         r1 = config["input_dir"]+"{sample}_read1.fastq",
         r2 = config["input_dir"]+"{sample}_read2.fastq"
-    output: "data/emirge/{sample}/priors.initialized.txt"
+    output:
+        out1 = "data/emirge/{sample}/priors.initialized.txt",
+        out2 = "data/emirge/{sample}/iter."+config["num_iter_str"]
     conda: "envs/emirge_env.yaml"
     params:
         outdir = "data/emirge/{sample}/"
@@ -33,7 +35,7 @@ rule runemirge:
         "-a {config[num_threads]} --phred33"
 
 rule rename:
-    input: "data/emirge/{sample}/iter."+config["num_iter"]
+    input: "data/emirge/{sample}/iter."+config["num_iter_str"]
     output: "data/emirge/{sample}_emirge.fasta"
     conda: "envs/emirge_env.yaml"
     shell: "emirge_rename_fasta.py {input} > {output}"
