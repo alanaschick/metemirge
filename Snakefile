@@ -14,17 +14,15 @@ SAMPLES = SAMPLES[0].tolist()
 # **** Rules ****
 
 rule all:
-    input:
-        "results/{sample}/summary.csv",
-        "results/{sample}/{sample}_best.tsv"
+    input: expand("data/emirge/{sample}.fasta", sample=SAMPLES)
+        #"results/{sample}/summary.csv",
+        #"results/{sample}/{sample}_best.tsv"
 
 rule runemirge:
     input:
-        r1 = "{params.dir}{sample}_read1.fastq",
-        r2 = "{params.dir}{sample}_read2.fastq"
-    output: "data/emirge/{sample}/iter.{config[max_num_iter]}/iter.{config[max_num_iter]}.cons.fasta}"
-    params:
-        dir = {config[emirge_dir]}
+        r1 = config["emirge_dir"]+"{sample}_read1.fastq",
+        r2 = config["emirge_dir"]+"{sample}_read2.fastq"
+    output: "data/emirge/"+"{sample}.fasta"
     conda: "envs/emirge_env.yaml"
     shell:
         "emirge.py {config[emirge_dir]} -1 {input.r1} -2 {input.r2} "
