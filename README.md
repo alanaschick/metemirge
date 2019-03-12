@@ -7,9 +7,9 @@ This pipeline is written in snakemake and designed to automate and control the s
 
 EMIRGE is a tool for reconstructing full-length marker gene sequences from microbial community short-read sequencing data (Miller et al, 2011, Genome Biology). 
 
-Input: 
+Input: filtered and cleaned fastq files. 
 
-Output:
+Output: ???
 
 ## Installation
 
