@@ -28,30 +28,31 @@ rule runemirge:
         "emirge.py {config[emirge_dir]} -1 {input.r1} -2 {input.r2} "
         "-f {config[fasta_db]} -b {config[bowtie_db]} -l {config[max_read_length]} "
         "-i {config[insert_mean]} -s {config[insert_stddev]} -n {config[num_iter]} "
-        "-a {config[num_threads]}"
+        "-a {config[num_threads]} --phred33"
 
 #rule rename:
-#    input: "data/emirge/{sample}/iter.{config[max_num_iter]}/iter.{config[max_num_iter]}.cons.fasta}"
-#    output: "data/emirge/{sample}/{sample}_renamed.fasta"
+#    input: "data/emirge/"+"{sample}.fasta"
+#    output:
+#        rename = "data/emirge/{sample}_final.fasta"
 #    conda: "envs/emirge_env.yaml"
-#    shell: "python scripts/emirge_rename_fasta.py <options>"
+#    shell: "emirge_rename_fasta.py iter.{config[num_iter]} > {output.rename}"
 
 #rule blast:
-#    input: "data/emirge/{sample}/{sample}_renamed.fasta"
-#    output: "data/emirge/{sample}/{sample}_raw_blast_table.tsv"
+#    input: "data/emirge/{sample}_final.fasta"
+#    output: "data/emirge/sample}_raw_blast_table.tsv"
 #    params:
 #        db = "{config[blast_db]}"
 #    conda: "envs/blast_env.yaml"
 #    shell: "blast <options>"
 
 #rule parseblast:
-#    input: "data/emirge/{sample}/{sample}_raw_blast_table.tsv"
-#    output: "data/emirge/{sample}/{sample}_parsed.tsv"
-#    conda:
+#    input: "data/emirge/{sample}_raw_blast_table.tsv"
+#    output: "data/emirge/{sample}_parsed.tsv"
+#    conda: "envs/py_env.yaml"
 #    shell: "python scripts/parsescript.py"
 
 #rule selectbest:
 #    input: expand("data/emirge/{sample}/{database}/{sample}_parsed.tsv", database = DATABASE)
 #    output: "results/{sample}/{sample}_best.tsv"
-#    conda:
+#    conda: " envs/py_env.yaml"
 #    shell: "python scripts/selecbest.py"
