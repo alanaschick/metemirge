@@ -49,10 +49,12 @@ All output files will be placed in the `results` directory and logs of each rule
 
 ## Pipeline summary
 
-1) Reconstruct marker sequences using EMIRGE. Enter details here. 
+**1) Reconstruct marker sequences using EMIRGE.**
 
-2) Blast. 
+This step runs EMIRGE with the `emirge.py` script for reconstructing marking sequences using a reference sequence database. 
 
-3) Select best blast hit.
+**2) Blast.**
 
-4) Optional metaphlan? Compare to EMIRGE output.
+**3) Select best blast hit.**
+
+**4) Optional metaphlan? Compare to EMIRGE output.**
