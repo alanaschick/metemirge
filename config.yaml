@@ -3,12 +3,12 @@
 # *************************************
 
 # List of files
-list_files: "ref_files/list_files.txt"
+list_files: "/home/aschick/projects/test_metemirge/list_files.txt"
 
 # EMIRGE parameters
-input_dir: "data/fastq/"
-fasta_db: "ref_files/silva/SILVA_132_SSURef_Nr99_tax_silva_trunc.ge1200bp.le2000bp.0.97.fixed.fasta"
-bowtie_db: "ref_files/silva/SILVA_132_SSURef_Nr99_tax_silva_trunc.ge1200bp.le2000bp.0.97.fixed"
+input_dir: "/home/aschick/projects/test_metemirge/data/fastq/"
+fasta_db: "/home/aschick/refs/silva/SILVA_132_SSURef_Nr99_tax_silva_trunc.ge1200bp.le2000bp.0.97.fixed.fasta"
+bowtie_db: "/home/aschick/refs/silva/SILVA_132_SSURef_Nr99_tax_silva_trunc.ge1200bp.le2000bp.0.97.fixed"
 max_read_length: 100
 insert_mean: 240
 insert_stddev: 100
