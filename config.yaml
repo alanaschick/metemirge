@@ -1,6 +1,6 @@
-# **********************************
+# *************************************
 # * Parameters for metemirge pipeline *
-# **********************************
+# *************************************
 
 # List of files
 list_files: "ref_files/list_files.txt"
@@ -12,8 +12,17 @@ bowtie_db: "ref_files/silva/SILVA_132_SSURef_Nr99_tax_silva_trunc.ge1200bp.le200
 max_read_length: 100
 insert_mean: 240
 insert_stddev: 100
-num_iter: 40
-num_iter_str: "40"
+num_iter: 5
+num_iter_str: "05" # If this is <10, add a 0 before the number to make it two digits
+
+# BLAST parameters
+database:
+blast_db_dir:
+evalue:
+max_target_seqs:
+outfmt:
+out_columns:
+
 
 # Number of threads
 num_threads: 28
