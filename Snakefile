@@ -14,7 +14,7 @@ SAMPLES = SAMPLES[0].tolist()
 # **** Rules ****
 
 rule all:
-    input: expand("data/emirge/{sample}_emirge.fasta", sample=SAMPLES)
+    input: expand("data/emirge/{sample}/{sample}_emirge.fasta", sample=SAMPLES)
         #"results/{sample}/summary.csv",
         #"results/{sample}/{sample}_best.tsv"
 
@@ -22,9 +22,7 @@ rule runemirge:
     input:
         r1 = config["input_dir"]+"{sample}_read1.fastq",
         r2 = config["input_dir"]+"{sample}_read2.fastq"
-    output:
-        out1 = "data/emirge/{sample}/priors.initialized.txt",
-        out2 = "data/emirge/{sample}/iter."+config["num_iter_str"]
+    output: "data/emirge/{sample}/iter."+config["num_iter_str"]
     conda: "envs/emirge_env.yaml"
     params:
         outdir = "data/emirge/{sample}/"
@@ -36,17 +34,21 @@ rule runemirge:
 
 rule rename:
     input: "data/emirge/{sample}/iter."+config["num_iter_str"]
-    output: "data/emirge/{sample}_emirge.fasta"
+    output: "data/emirge/{sample}/{sample}_emirge.fasta"
     conda: "envs/emirge_env.yaml"
     shell: "emirge_rename_fasta.py {input} > {output}"
 
-#rule blast:
-#    input: "data/emirge/{sample}_final.fasta"
-#    output: "data/emirge/sample}_raw_blast_table.tsv"
-#    params:
-#        db = "{config[blast_db]}"
-#    conda: "envs/blast_env.yaml"
-#    shell: "blast <options>"
+rule blast:
+    input: "data/emirge/{sample}/{sample}_emirge.fasta"
+    output: expand("data/emirge/{{sample}}/blast/{database}/{{sample}}_raw_blast_table.tsv", database = config["database"])
+    conda: "envs/blast_env.yaml"
+    params:
+        outdir = "data/emirge/{sample}/blast"
+    shell:
+        "python scripts/runBlast.py --query_file {input} --db_dir {config[blast_db_dir]} "
+        "--db_names {config[database]} --output_dir {params.out_dir} --evalue {config[evalue]} "
+        "--max_target_seq {config[max_target_seqs]} --output_format {config[outfmt]} "
+        "--output_columns {config[out_columns]} --prefix {wildcards.sample}"
 
 #rule parseblast:
 #    input: "data/emirge/{sample}_raw_blast_table.tsv"
