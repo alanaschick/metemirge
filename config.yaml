@@ -16,16 +16,12 @@ num_iter: 5
 num_iter_str: "05" # If this is <10, add a 0 before the number to make it two digits
 
 # BLAST parameters
-database:
-blast_db_dir:
-evalue:
-max_target_seqs:
-outfmt:
-out_columns:
+path_to_blastdbs: "/home/aschick/refs/blast/"
+list_blastdb_names: ["16SMicrobial", "ure_16s"]
+evalue: 1e-05
+max_target_seqs: 10
 
 
-# Number of threads
-num_threads: 28
 
 
 
