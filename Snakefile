@@ -14,7 +14,7 @@ SAMPLES = SAMPLES[0].tolist()
 # **** Rules ****
 
 rule all:
-    input: expand("data/emirge/{sample}/{sample}_emirge.fasta", sample=SAMPLES)
+    input: expand("data/blast/{database}/{sample}_raw_blast_table.tsv", sample=SAMPLES, database=config["list_blastdb_names"])
         #"results/{sample}/summary.csv",
         #"results/{sample}/{sample}_best.tsv"
 
@@ -23,7 +23,7 @@ rule runemirge:
         r1 = config["input_dir"]+"{sample}_read1.fastq",
         r2 = config["input_dir"]+"{sample}_read2.fastq"
     output: "data/emirge/{sample}/iter."+config["num_iter_str"]
-    conda: "envs/emirge_env.yaml"
+    conda: "metemirge_files/envs/emirge_env.yaml"
     params:
         outdir = "data/emirge/{sample}/"
     shell:
@@ -40,15 +40,14 @@ rule rename:
 
 rule blast:
     input: "data/emirge/{sample}/{sample}_emirge.fasta"
-    output: expand("data/emirge/{{sample}}/blast/{database}/{{sample}}_raw_blast_table.tsv", database = config["database"])
-    conda: "envs/blast_env.yaml"
+    output: "data/blast/{database}/{sample}_raw_blast_table.tsv"
+    conda: "metemirge_files/envs/blast_env.yaml"
     params:
-        outdir = "data/emirge/{sample}/blast"
+        db = config["path_to_blastdbs"]+"{database}"+"/"+"{database}"
     shell:
-        "python scripts/runBlast.py --query_file {input} --db_dir {config[blast_db_dir]} "
-        "--db_names {config[database]} --output_dir {params.out_dir} --evalue {config[evalue]} "
-        "--max_target_seq {config[max_target_seqs]} --output_format {config[outfmt]} "
-        "--output_columns {config[out_columns]} --prefix {wildcards.sample}"
+        "blastn -query {input} -db {params.db} -out {output} "
+        "-evalue {config[evalue]} -max_target_seqs {config[max_target_seqs]} "
+        "-outfmt '6 qseqid qacc qlen sseqid sacc slen stitle qstart qend sstart send length evalue bitscore pident qcovs nident mismatch positive gaps qframe sframe staxids sskingdoms'"
 
 #rule parseblast:
 #    input: "data/emirge/{sample}_raw_blast_table.tsv"
