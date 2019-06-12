@@ -3,8 +3,10 @@
 # ************************************
 
 # **** Variables ****
-
 configfile: "config.yaml"
+import os
+os.environ["BLASTDB"]=config["path_to_taxdb"]
+os.environ["PATH"]+=os.pathsep+"/export/common/bin"
 
 # Specify the list of files to run the pipeline on
 import pandas as pd
@@ -22,7 +24,7 @@ rule runemirge:
     input:
         r1 = config["input_dir"]+"{sample}_read1.fastq",
         r2 = config["input_dir"]+"{sample}_read2.fastq"
-    output: "data/emirge/{sample}/iter."+config["num_iter_str"]
+    output: directory("data/emirge/{sample}/iter."+config["num_iter_str"])
     conda: "metemirge_files/envs/emirge_env.yaml"
     params:
         outdir = "data/emirge/{sample}/"
@@ -35,7 +37,7 @@ rule runemirge:
 rule rename:
     input: "data/emirge/{sample}/iter."+config["num_iter_str"]
     output: "data/emirge/{sample}/{sample}_emirge.fasta"
-    conda: "envs/emirge_env.yaml"
+    conda: "metemirge_files/envs/emirge_env.yaml"
     shell: "emirge_rename_fasta.py {input} > {output}"
 
 rule blast:
