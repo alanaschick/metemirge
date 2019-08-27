@@ -16,16 +16,18 @@ Output: ???
 To use this pipeline, clone this repository into your project directory using the following command:
 
 ```
-git clone https://github.com/alanaschick/metemirge.git projectname
+git clone https://github.com/alanaschick/metemirge.git metemirge
 ```
 
-Note: you need to have snakemake installed in order to dun this. To install snakemake using conda, run the following line:
+Note: you need to have **conda** and **snakemake** installed in order to run this. To install conda, see the instructions [here](https://github.com/ucvm/synergy/wiki). 
+
+To install snakemake using conda, run the following line:
 
 ```
-conda install -c bioconda snakemake
+conda install -c bioconda -c conda-forge snakemake
 ```
 
-See the [snakemake](https://bitbucket.org/johanneskoester/snakemake/wiki/Home) for details.
+See the snakemake installation [webpage](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html) for further details.
 
 ## Config file
 
@@ -38,7 +40,7 @@ Test the pipeline by running `snakemake -np`. This command prints out the jobs t
 To run the pipeline on the cluster, enter the following command from the project directory:
 
 ```
-snakemake --cluster-config cluster.json --cluster 'bsub -n {cluster.n} -R {cluster.resources} -W {cluster.walllim} -We {cluster.time} -M {cluster.maxmem} -oo {cluster.output} -e {cluster.error}' --jobs 500 --use-conda
+snakemake --cluster-config cluster.json --cluster 'bsub -n {cluster.n} -R {cluster.resources} -W {cluster.walllim} -We {cluster.time} -M {cluster.maxmem} -oo {cluster.output} -e {cluster.error}' --jobs 100 --use-conda
 ```
 
 Note: the file `cluster.json` contains the parameters for the LSF job submission system. They are by default the same for each process, but can be modified in this file.
